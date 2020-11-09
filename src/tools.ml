@@ -7,10 +7,16 @@ let clone_nodes (gr:'a graph) =
 
 
 let gmap (gr:'a graph) (f:'a->'b) = 
-	e_iter gr (fun id1 id2 x -> f (id2,x))	
+	let new_graph = clone_nodes gr in
+	e_fold gr (fun acc id1 id2 x -> new_arc acc id1 id2 (f x)) new_graph
 
 
 
-
-let rec add_arc g id1 id2 n =
-  assert false 
+	
+let rec add_arc (gr:'a graph) (id1:int) (id2:int) (n:'a) =
+	match find_arc gr id1 id2 with
+	| None -> new_arc gr id1 id2 n
+	| _ -> e_fold gr (fun acc id3 id4 x -> 
+						if id1=id3 &&
+						id2=id4 then new_arc acc id1 id2 (x+n)
+						else new_arc acc id3 id4 x) (clone_nodes gr)

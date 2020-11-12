@@ -12,9 +12,12 @@ edit:
 demo: build
 	@echo "\n==== EXECUTING ====\n"
 	./ftest.native graphs/graph1 1 2 outfile
+	@echo "\n==== SRC ==== (content of source) \n"
+	@cat graphs/graph1
 	@echo "\n==== RESULT ==== (content of outfile) \n"
 	@cat outfile
 
 clean:
 	-rm -rf _build/
 	-rm ftest.native
+

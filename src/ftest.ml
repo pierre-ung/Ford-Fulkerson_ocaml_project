@@ -3,7 +3,9 @@
 
 open Gfile
 open Tools
-
+open Ford_fulkerson
+open Graph
+open Printf
 
 let () =
 
@@ -31,11 +33,25 @@ let () =
 
 
 
-  let new_graph = add_arc int_graph 1 2 1000 in
+  let new_graph = empty_graph in
+  let new_graph = new_node new_graph 0 in 
+  let new_graph = new_node new_graph 1 in
+  let new_graph = new_node new_graph 2 in
+  let new_graph = new_node new_graph 3 in   
+  let g1 = new_arc new_graph 0 1 5
+  in 
+  let g2 = new_arc g1 1 2 5
+  in
+  let g3 = new_arc g2 0 3 5
+  in
+  let g4 = new_arc g3 3 2 5
+  in
+  let g5 = new_arc g4 1 3 5
+  in
+  (all_path (init_graph g5) 3 2);
+  ()
 
-
-
-  let string_graph = gmap new_graph string_of_int in
+(*let string_graph = gmap new_graph (string_of_int) in
   (* Rewrite the graph that has been read. *)
   let () = write_file outfile string_graph in
 
@@ -43,5 +59,5 @@ let () =
 
 
 
-  ()
+  () *)
 

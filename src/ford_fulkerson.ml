@@ -5,7 +5,7 @@ open Tools
 let init_graph gr = 
   gmap gr (fun x -> (0,x))
 
-let residual_path gr =
+let residual_graph gr =
   gmap gr (fun (x,y) -> y-x)
 
 
@@ -29,25 +29,8 @@ let all_path (gr: 'a graph) (src: id) (trg: id) =
       if node = trg 
       then [Some (new_arc path actual node w)]
       else 
-        (aux node (node::memo) (new_arc path actual node w) (out_arcs gr node))@(aux actual memo path t)
-  in aux src [src] empty_graph (out_arcs gr src)
-
-
-(* let rec aux path memo arcs actual_node = 
-   match arcs with
-   | [] -> [None]
-   | (next_node, weight)::rest -> 
-    if next_node = target 
-    then 
-      [Some (new_arc path actual_node next_node weight)]
-    else
-    if (List.mem next_node memo)
-    then 
-      [None]
-    else
-      (aux (new_arc path actual_node next_node weight) (next_node::memo) rest next_node)::[]
-   in aux (empty_graph ()) *)
-
+        (List.flatten(aux node (node::memo) (new_arc path actual node w) (out_arcs gr node)))@(List.flatten (aux actual memo path t))
+  in aux src [src] (clone_nodes gr) (out_arcs gr src)
 
 
 

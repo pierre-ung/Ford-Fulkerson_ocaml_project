@@ -48,10 +48,10 @@ let () =
   in
   let g5 = new_arc g4 1 3 5
   in
-  (all_path (init_graph g5) 3 2);
-  ()
-
-(*let string_graph = gmap new_graph (string_of_int) in
+  let _ = all_path (init_graph g5)
+  in ()
+  (*
+  let string_graph = gmap new_graph (fun (a, b) -> "("^(string_of_int a)^","^(string_of_int b)^")") in
   (* Rewrite the graph that has been read. *)
   let () = write_file outfile string_graph in
 
@@ -59,5 +59,5 @@ let () =
 
 
 
-  () *)
-
+  () 
+      *)

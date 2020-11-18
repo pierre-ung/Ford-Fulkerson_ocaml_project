@@ -48,7 +48,7 @@ let () =
   in
   let g5 = new_arc g4 1 3 5
   in
-  let _ = all_path (init_graph g5)
+  let l =  find_path_v1 (residual_graph (init_graph g5))
   in ()
   (*
   let string_graph = gmap new_graph (fun (a, b) -> "("^(string_of_int a)^","^(string_of_int b)^")") in

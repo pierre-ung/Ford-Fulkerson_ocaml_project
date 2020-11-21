@@ -32,26 +32,10 @@ let () =
   let int_graph = gmap graph int_of_string in
 
 
+  let solved_graph = solve_max_flow int_graph 0 5
+  in
 
-  let new_graph = empty_graph in
-  let new_graph = new_node new_graph 0 in 
-  let new_graph = new_node new_graph 1 in
-  let new_graph = new_node new_graph 2 in
-  let new_graph = new_node new_graph 3 in   
-  let g1 = new_arc new_graph 0 1 5
-  in 
-  let g2 = new_arc g1 1 2 5
-  in
-  let g3 = new_arc g2 0 3 5
-  in
-  let g4 = new_arc g3 3 2 5
-  in
-  let g5 = new_arc g4 1 3 5
-  in
-  let l =  find_path_v1 (residual_graph (init_graph g5))
-  in ()
-  (*
-  let string_graph = gmap new_graph (fun (a, b) -> "("^(string_of_int a)^","^(string_of_int b)^")") in
+  let string_graph = gmap solved_graph (fun (a, b) -> "("^(string_of_int a)^","^(string_of_int b)^")") in
   (* Rewrite the graph that has been read. *)
   let () = write_file outfile string_graph in
 
@@ -60,4 +44,4 @@ let () =
 
 
   () 
-      *)
+      

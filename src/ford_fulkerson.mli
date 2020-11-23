@@ -1,6 +1,9 @@
 open Graph
 
 
+
+val find_in_arcs: 'a graph -> id -> 'a out_arcs
+
 val init_graph: int graph -> (int*int) graph
 
 val residual_graph: (int*int) graph -> int graph

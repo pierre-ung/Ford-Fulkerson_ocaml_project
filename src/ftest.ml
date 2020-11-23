@@ -30,9 +30,10 @@ let () =
   (* Open file *)
   let graph = from_file infile in
   let int_graph = gmap graph int_of_string in
+  let t = print_int_list (List.map (fst) (find_in_arcs int_graph 4))
+  in
 
-
-  let solved_graph = solve_max_flow int_graph 0 5
+  let solved_graph = solve_max_flow int_graph _source _sink 
   in
 
   let string_graph = gmap solved_graph (fun (a, b) -> "("^(string_of_int a)^","^(string_of_int b)^")") in
@@ -44,4 +45,3 @@ let () =
 
 
   () 
-      

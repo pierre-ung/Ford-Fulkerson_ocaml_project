@@ -7,33 +7,16 @@ let init_graph (gr:int graph) =
   gmap gr (fun x -> (0,x))
 
 let residual_graph (gr:(int*int) graph) =
-  gmap gr (fun (x,y) -> y-x)
-
+  let res_graph = gmap gr (fun (x,y) -> y-x)
+in e_fold res_graph (fun acc id1 id2 n -> new_arc acc id2 id1 0) res_graph
+(* for every edge in the graph, we create its back-edge, of value 0*)
 
 (* we'll be calling that function multiple times, until it returns a blacklist containing the src id*)
 (* the intern loop variable 'path' is used to return the path, but also as a memo list not to loop in the graph *)
 
 
-let find_path_v1 (gr: int graph) (src: id) (target: id) (blacklist: id list) = 
-  let rec loop (actual: id) (path: id list) (min_weight: int) (potentials: int out_arcs) = 
-  match potentials with
-    | [] -> (actual::blacklist,[],0)
-    | (next,weight)::tail -> if List.mem next path
-                             then loop actual path min_weight tail
-                            else
-                              if next = target
-                              then (blacklist, target::path, (min weight min_weight))
-                              else
-                                if not (List.mem next blacklist)
-                                then if weight > 0 
-                                      then loop next (next::path) (min weight min_weight) (out_arcs gr next)
-                                      else loop actual path min_weight tail
-                                else loop actual path min_weight tail                                
-  in loop src [src] max_int (out_arcs gr src)
 
-
-
-let find_path_v2 (gr: int graph) (src: id) (target: id) (blacklist: id list) = 
+let find_path (gr: int graph) (src: id) (target: id) (blacklist: id list) = 
   let rec loop (actual: id) (path: id list) (min_weight: int) (potentials: int out_arcs) = 
   match potentials with
     | [] -> (actual::blacklist,[],0)
@@ -48,27 +31,44 @@ let find_path_v2 (gr: int graph) (src: id) (target: id) (blacklist: id list) =
 
 
 
-let add_path (gr: (int*int) graph) (path: id list) (n: int) = 
+let add_flow_on_path (gr: int graph) (path: id list) (n: int) = 
   let rec loop temp_gr = function
+    | [] -> temp_gr
     | [target] -> temp_gr
-    | actual::next::tail -> let new_graph = my_add_arc temp_gr actual next n
-                            in loop new_graph (next::tail)
+    | actual::next::tail -> let added_going_flow = add_arc temp_gr actual next (-n)
+                            in let added_back_flow = add_arc added_going_flow next actual n
+                            in loop added_back_flow (next::tail)
   in loop gr path
 
                           
+(* Note on below function : gr and temp_gr are semanticaly different.
+    gr is the initial graph with the capacities given by the user to be solved, 
+    and temp_gr is the intermediate reidual_graph with flow that can still be added.*)
+
+let merge_initial_and_residual (initial_gr: int graph) (residual_graph: int graph) =
+  e_fold initial_gr (fun acc id1 id2 n -> match find_arc residual_graph id1 id2 with 
+                                          | None -> failwith "Errors have been done"
+                                          | Some x -> my_add_arc acc id1 id2 (n-x) ) (init_graph initial_gr)
+
+
 let solve_max_flow (gr: int graph) (src: id) (target: id) = 
-  let rec loop (temp_gr: (int*int) graph) (blacklist: id list) = 
-    if List.hd blacklist = src then temp_gr
-    else let (new_blacklist, path, weight_to_add) = find_path_v2 (residual_graph temp_gr) src target blacklist
+  let rec loop (temp_gr: int graph) (blacklist: id list) = 
+    if List.hd blacklist = src then (merge_initial_and_residual gr temp_gr)
+    else let (new_blacklist, path, weight_to_add) = find_path temp_gr src target blacklist
           in 
+
+            let () = print_int_list path in
+
+
             if path = []
              (*if no path, re-use the same graph with new blacklist*)
             then loop temp_gr new_blacklist 
             else
             (*else, compute the new graph and use either new_blacklist or blacklist, they are the same*)
-              let new_graph = add_path temp_gr path weight_to_add 
+              let new_graph = add_flow_on_path temp_gr path weight_to_add 
               in loop new_graph blacklist
-  in loop (init_graph gr) [-1]
-  (*We add -1 to the blacklist to easy the program's writing.
+  in loop (residual_graph (init_graph gr)) [-1]
+  (*We add -1 to the blacklist to ease the program's writing.
     So that, the List.hd matching on first call doesn't throw an exception.
     Otherwise, some conditional work has to be done, and i didn't manage to make it smart in a functional-programming way.*)
+

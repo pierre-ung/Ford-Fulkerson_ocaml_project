@@ -100,6 +100,8 @@ let from_file path =
   close_in infile ;
   final_graph
 
+
+
 let export gr file = 
   let ff = open_out file in 
   fprintf ff "digraph finite_state_machine {
@@ -108,6 +110,21 @@ let export gr file =
                   node [shape = circle];";
   e_iter gr (fun id1 id2 lbl -> (*let newlbl = if lbl = string_of_int max_int then "∞" else  lbl in*)
              fprintf ff "%d -> %d [label = \"%s\"];\n" id1 id2 (*new*)lbl) ;
+  fprintf ff "}"
+
+
+
+
+let export_int_int_graph gr file = 
+  let ff = open_out file in 
+  fprintf ff "digraph finite_state_machine {
+                  rankdir=LR;
+                  size=\"15\"
+                  node [shape = circle];";
+  e_iter gr (fun id1 id2 lbl -> let newlbl = if snd lbl = max_int 
+                                            then "("^(string_of_int (fst lbl))^"/∞)"
+                                            else "("^(string_of_int (fst lbl))^"/"^(string_of_int (snd lbl))^")" in
+             fprintf ff "%d -> %d [label = \"%s\"];\n" id1 id2 newlbl) ;
   fprintf ff "}"
 
   (* Then part about "∞" is here to make the display of a money_graphs easier in tests*)

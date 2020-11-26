@@ -1,5 +1,5 @@
-n Pierre 40
-n Loic 70
-n Qq 40
-n Moi 40
+n Pierre 15
+n Loic 63
+n Qq 256
+n Moi 13
 % Ceci est un commentaire

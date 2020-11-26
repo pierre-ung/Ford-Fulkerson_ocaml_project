@@ -56,9 +56,9 @@ let () =
 
   let () = money_write_file outfile solved_graph infos in
 
-  (*
-  let() = export string_graph (outfile^".dot") in
-  *)
+  
+  let() = export_int_int_graph solved_graph (outfile^".dot") in
+  
 
 
   () 

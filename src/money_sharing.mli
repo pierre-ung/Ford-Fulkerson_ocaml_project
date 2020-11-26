@@ -13,3 +13,7 @@ val money_write_file: path -> string graph -> unit
 val money_export: string graph -> path -> unit
 
 val print_infos_list: infos list -> unit
+
+val compute_sum: infos list -> int 
+
+val compute_diff: infos list -> (id*int) list

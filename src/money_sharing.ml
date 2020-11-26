@@ -115,3 +115,18 @@ let print_infos_list infos =
 		| (id,name,paid)::reste -> let () = Printf.printf "Name : %s, id : %d, paid : %d\n%!" name id paid
 											in loop reste
 	in loop infos
+
+
+
+let compute_sum infos_list = List.fold_left (fun acc (id,name,paid) -> paid+acc) 0 infos_list 
+
+
+let compute_diff (infos_list: infos list) = 
+	let total = compute_sum infos_list in
+		let perPerson = total / (List.length infos_list) in 
+			List.fold_left (fun acc (id,name,paid) -> (id, (paid-perPerson) )::acc ) [] infos_list
+
+
+
+(*let money_init_graph infos_list = 
+	let complete_sub_graph = *)

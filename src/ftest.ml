@@ -39,14 +39,21 @@ let () =
   in
   let () = print_infos_list infos
   in 
+  let int_graph = gmap graph int_of_string
+in
+  let c_graph = complete_subgraph int_graph
+  in
 
+  let string_graph = gmap c_graph string_of_int
+ in
   (*
   let string_graph = gmap initial_graph (fun (a, b) -> "("^(string_of_int a)^","^(string_of_int b)^")") in
   (* Rewrite the graph that has been read. *)
+*)
   let () = write_file outfile string_graph in
 
   let() = export string_graph (outfile^".dot") in
-  *)
+  
 
 
   () 

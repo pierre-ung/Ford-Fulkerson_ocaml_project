@@ -41,27 +41,24 @@ let () =
   let () = print_infos_list infos
   in 
   let int_graph = gmap graph int_of_string
-in
-  let solved_graph = money_init_graph int_graph (compute_diff infos)
+  in
+  let solved_graph = solve_money_sharing int_graph infos
   in
 
 
-  let string_graph = gmap solved_graph string_of_int
- in
-
-
   (*
-  let string_graph = gmap solved (fun (a, b) -> "("^(string_of_int a)^","^(string_of_int b)^")") in
+  let string_graph = gmap solved_graph (fun (a, b) -> "("^(string_of_int a)^","^(string_of_int b)^")") in
   *)
 
 
 
   (* Rewrite the graph that has been read. *)
 
-  let () = write_file outfile string_graph in
+  let () = money_write_file outfile solved_graph infos in
 
+  (*
   let() = export string_graph (outfile^".dot") in
-  
+  *)
 
 
   () 

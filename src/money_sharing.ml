@@ -1,6 +1,7 @@
 open Printf
 open Graph
 open Tools
+open Ford_fulkerson
 
 (* Format of text files:
    % This is a comment
@@ -87,12 +88,13 @@ let money_write_file path graph infos_list =
   (* Open a write-file. *)
   let ff = open_out path in
   let size = List.length infos_list in
+  let graph = gmap graph fst in
   (* Write in this file. *)
   fprintf ff "%% This is the solution for money sharing problem\n\n" ;
 
   (* Write all names, and what they have to pay. *)
-  e_iter graph (fun id1 id2 to_pay -> if (id1 <> size && id2 <> size && id1 <> (size+1) && id2 <> (size+1) && int_of_string to_pay <> 0 )
-									then fprintf ff "%s owes %s$ to %s\n" (get_name_of_id infos_list id1) to_pay (get_name_of_id infos_list id2)  );
+  e_iter graph (fun id1 id2 to_pay -> if (id1 <> size && id2 <> size && id1 <> (size+1) && id2 <> (size+1) && to_pay <> 0 )
+									then fprintf ff "%s owes %d$ to %s\n" (get_name_of_id infos_list id1) to_pay (get_name_of_id infos_list id2)  );
 
   
 
@@ -117,8 +119,8 @@ let compute_sum (infos_list: infos list) = List.fold_left (fun acc (id,name,paid
 
 let compute_diff (infos_list: infos list) = 
 	let total = compute_sum infos_list in
-		let perPerson = total / (List.length infos_list) in 
-			List.fold_left (fun acc (id,name,paid) -> (id, (paid-perPerson) )::acc ) [] infos_list
+	let perPerson = total / (List.length infos_list) in 
+	List.fold_left (fun acc (id,name,paid) -> (id, (paid-perPerson) )::acc ) [] infos_list
 
 
 let money_init_graph (gr: int graph) (diff_list: (id*int) list ) = 
@@ -131,4 +133,8 @@ let money_init_graph (gr: int graph) (diff_list: (id*int) list ) =
 													new_arc acc size id (abs score)
 												else new_arc acc id (size+1) score
 										else acc) final_graph
-																
+
+let solve_money_sharing (gr:int graph) (infos_list: infos list) = 
+	let algo_graph = money_init_graph gr (compute_diff infos_list) in
+	let size = List.length infos_list in
+	solve_max_flow algo_graph size (size+1)

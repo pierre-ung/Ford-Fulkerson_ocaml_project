@@ -14,9 +14,11 @@ open Printf
 
 type path = string
 
+type infos = id*string*int
+
 (* Reads a line with a node. *)
-let read_node id graph line =
-  try Scanf.sscanf line "n %f %f" (fun _ _ -> new_node graph id)
+let read_node id graph line infolist =
+  try Scanf.sscanf line "n %f %f" (fun name paid -> (new_node graph id, (id,name, int_of_string paid)::infolist )
   with e ->
     Printf.printf "Cannot read node in line - %s:\n%s\n%!" (Printexc.to_string e) line ;
     failwith "from_file"
@@ -47,26 +49,26 @@ let money_from_file path =
 
   (* Read all lines until end of file. 
    * n is the current node counter. *)
-  let rec loop n graph =
+  let rec loop n graph infolist =
     try
       let line = input_line infile in
 
       (* Remove leading and trailing spaces. *)
       let line = String.trim line in
 
-      let (n2, graph2) =
+      let (n2, graph2, infolist2) =
         (* Ignore empty lines *)
         if line = "" then (n, graph)
 
         (* The first character of a line determines its content : n or e. *)
         else match line.[0] with
-          | 'n' -> (n+1, read_node n graph line)
-          | 'e' -> (n, read_arc graph line)
+          | 'n' -> let readed = read_node n graph line infolist 
+      				in (n+1, fst readed, snd readed)
 
           (* It should be a comment, otherwise we complain. *)
           | _ -> (n, read_comment graph line)
       in      
-      loop n2 graph2
+      loop n2 graph2 infolist2
 
     with End_of_file -> graph (* Done *)
   in

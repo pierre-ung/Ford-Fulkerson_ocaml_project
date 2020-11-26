@@ -104,7 +104,7 @@ let export gr file =
   let ff = open_out file in 
   fprintf ff "digraph finite_state_machine {
                   rankdir=LR;
-                  size=\"10\"
+                  size=\"8,5\"
                   node [shape = circle];";
   e_iter gr (fun id1 id2 lbl -> fprintf ff "%d -> %d [label = \"%s\"];\n" id1 id2 lbl) ;
-  fprintf ff "}";
+  fprintf ff "}"

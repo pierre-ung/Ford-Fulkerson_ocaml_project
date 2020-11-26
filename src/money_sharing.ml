@@ -1,4 +1,5 @@
 open Printf
+open Graph
 
 (* Format of text files:
    % This is a comment
@@ -18,7 +19,7 @@ type infos = id*string*int
 
 (* Reads a line with a node. *)
 let read_node id graph line infolist =
-  try Scanf.sscanf line "n %f %f" (fun name paid -> (new_node graph id, (id,name, int_of_string paid)::infolist )
+  try Scanf.sscanf line "n %s %d" (fun name paid -> (new_node graph id, (id,name, paid)::infolist) ) 
   with e ->
     Printf.printf "Cannot read node in line - %s:\n%s\n%!" (Printexc.to_string e) line ;
     failwith "from_file"
@@ -27,13 +28,6 @@ let read_node id graph line infolist =
  * (Necessary because the website we use to create online graphs does not generate correct files when some nodes have been deleted.) *)
 let ensure graph id = if node_exists graph id then graph else new_node graph id
 
-(* Reads a line with an arc. *)
-let read_arc graph line =
-  try Scanf.sscanf line "e %d %d %s"
-        (fun id1 id2 label -> new_arc (ensure (ensure graph id1) id2) id1 id2 label)
-  with e ->
-    Printf.printf "Cannot read arc in line - %s:\n%s\n%!" (Printexc.to_string e) line ;
-    failwith "from_file"
 
 (* Reads a comment or fail. *)
 let read_comment graph line =
@@ -58,25 +52,25 @@ let money_from_file path =
 
       let (n2, graph2, infolist2) =
         (* Ignore empty lines *)
-        if line = "" then (n, graph)
+        if line = "" then (n, graph, infolist)
 
-        (* The first character of a line determines its content : n or e. *)
+        (* The first character of a line determines its content : n or comment. *)
         else match line.[0] with
           | 'n' -> let readed = read_node n graph line infolist 
       				in (n+1, fst readed, snd readed)
 
           (* It should be a comment, otherwise we complain. *)
-          | _ -> (n, read_comment graph line)
+          | _ -> (n, read_comment graph line, infolist)
       in      
       loop n2 graph2 infolist2
 
-    with End_of_file -> graph (* Done *)
+    with End_of_file -> (graph,infolist) (* Done *)
   in
 
-  let final_graph = loop 0 empty_graph in
+  let (final_graph, infolist) = loop 0 empty_graph [] in
 
   close_in infile ;
-  final_graph
+  (final_graph,infolist)
 
 
 
@@ -102,11 +96,22 @@ let money_write_file path graph =
   ()
 
 
+
 let money_export gr file = 
   let ff = open_out file in 
   fprintf ff "digraph finite_state_machine {
                   rankdir=LR;
-                  size=\"10\"
+                  size=\"8,5\"
                   node [shape = circle];";
   e_iter gr (fun id1 id2 lbl -> fprintf ff "%d -> %d [label = \"%s\"];\n" id1 id2 lbl) ;
-  fprintf ff "}";
+  fprintf ff "}"
+
+
+
+
+let print_infos_list infos = 
+	let rec loop = function
+		| [] -> Printf.printf "\n%!"
+		| (id,name,paid)::reste -> let () = Printf.printf "Name : %s, id : %d, paid : %d\n%!" name id paid
+											in loop reste
+	in loop infos

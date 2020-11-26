@@ -6,6 +6,7 @@ open Tools
 open Ford_fulkerson
 open Graph
 open Printf
+open Money_sharing
 
 let () =
 
@@ -28,20 +29,24 @@ let () =
   in
 
   (* Open file *)
+  (*
   let graph = from_file infile in
   let int_graph = gmap graph int_of_string in
+  *)
 
-  let initial_graph = solve_max_flow int_graph _source _sink
 
-  
+  let (graph,infos) = money_from_file infile
   in
+  let () = print_infos_list infos
+  in 
 
+  (*
   let string_graph = gmap initial_graph (fun (a, b) -> "("^(string_of_int a)^","^(string_of_int b)^")") in
   (* Rewrite the graph that has been read. *)
   let () = write_file outfile string_graph in
 
   let() = export string_graph (outfile^".dot") in
-
+  *)
 
 
   () 

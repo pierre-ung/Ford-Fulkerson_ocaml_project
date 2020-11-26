@@ -11,11 +11,12 @@ edit:
 
 demo: build
 	@echo "\n==== EXECUTING ====\n"
-	./ftest.native graphs/graph1 1 2 outfile
+	./ftest.native graphs/graph1 0 5 outfile
 
 
 	@echo "\n==== RESULT ==== (content of outfile) \n"
 	@cat outfile
+	dot -Tsvg outfile.dot > outfile.svg 
 
 clean:
 	-rm -rf _build/

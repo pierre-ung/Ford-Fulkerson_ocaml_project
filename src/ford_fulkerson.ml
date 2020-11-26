@@ -19,12 +19,12 @@ in e_fold res_graph (fun acc id1 id2 n -> new_arc acc id2 id1 0) res_graph
 let find_path (gr: int graph) (src: id) (target: id) (blacklist: id list) = 
   let rec loop (actual: id) (path: id list) (min_weight: int) (potentials: int out_arcs) = 
   match potentials with
-    | [] -> (actual::blacklist,[],0)
+    | [] -> (path,0) (*No path has been found, head of path will be added to blacklist*)
     | (next,weight)::tail ->
         if (not (List.mem next path) && not (List.mem next blacklist) && weight > 0) (* if i can go that way *)
         then 
           if next = target 
-          then (blacklist, List.rev (target::path), (min weight min_weight)) (* path as been found *)
+          then (target::path, (min weight min_weight)) (* path as been found *)
           else loop next (next::path) (min weight min_weight) (out_arcs gr next) (* on my way to find the path*)
         else loop actual path min_weight tail (* try next out_arc *)
   in loop src [src] max_int (out_arcs gr src)
@@ -41,9 +41,9 @@ let add_flow_on_path (gr: int graph) (path: id list) (n: int) =
   in loop gr path
 
                           
-(* Note on below function : gr and temp_gr are semanticaly different.
-    gr is the initial graph with the capacities given by the user to be solved, 
-    and temp_gr is the intermediate reidual_graph with flow that can still be added.*)
+
+
+
 
 let merge_initial_and_residual (initial_gr: int graph) (residual_graph: int graph) =
   e_fold initial_gr (fun acc id1 id2 n -> match find_arc residual_graph id1 id2 with 
@@ -51,23 +51,27 @@ let merge_initial_and_residual (initial_gr: int graph) (residual_graph: int grap
                                           | Some x -> my_add_arc acc id1 id2 (n-x) ) (init_graph initial_gr)
 
 
+
+
+
+(* Note on below function : gr and temp_gr are semanticaly different.
+    gr is the initial graph with the capacities given by the user to be solved, 
+    and temp_gr is the intermediate reidual_graph with flow that can still be added.*)
+
 let solve_max_flow (gr: int graph) (src: id) (target: id) = 
   let rec loop (temp_gr: int graph) (blacklist: id list) = 
     if List.hd blacklist = src then (merge_initial_and_residual gr temp_gr)
-    else let (new_blacklist, path, weight_to_add) = find_path temp_gr src target blacklist
-          in 
-
-            let () = print_int_list path in
-
-
-            if path = []
-             (*if no path, re-use the same graph with new blacklist*)
-            then loop temp_gr new_blacklist 
+    else let  (path, weight_to_add) = find_path temp_gr src target blacklist
+    (* Path is given as a List going from the target to the source. eg: T-N3-N2-N1-S*)
+          in
+            if List.hd path <> target (* Path could reach the target *)
+            then loop temp_gr ((List.hd path)::blacklist)
             else
             (*else, compute the new graph and use either new_blacklist or blacklist, they are the same*)
-              let new_graph = add_flow_on_path temp_gr path weight_to_add 
-              in loop new_graph blacklist
+              let new_graph = add_flow_on_path temp_gr (List.rev path) weight_to_add 
+              in loop new_graph [-1]
   in loop (residual_graph (init_graph gr)) [-1]
+
   (*We add -1 to the blacklist to ease the program's writing.
     So that, the List.hd matching on first call doesn't throw an exception.
     Otherwise, some conditional work has to be done, and i didn't manage to make it smart in a functional-programming way.*)

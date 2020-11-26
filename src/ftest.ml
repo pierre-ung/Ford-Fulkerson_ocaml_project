@@ -31,7 +31,7 @@ let () =
   let graph = from_file infile in
   let int_graph = gmap graph int_of_string in
 
-  let initial_graph = solve_max_flow int_graph 0 5
+  let initial_graph = solve_max_flow int_graph _source _sink
 
   
   in
@@ -40,7 +40,7 @@ let () =
   (* Rewrite the graph that has been read. *)
   let () = write_file outfile string_graph in
 
-  let() = export string_graph (outfile^".vg") in
+  let() = export string_graph (outfile^".dot") in
 
 
 

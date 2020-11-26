@@ -1,5 +1,6 @@
 open Printf
 open Graph
+open Tools
 
 (* Format of text files:
    % This is a comment
@@ -37,7 +38,7 @@ let read_comment graph line =
     failwith "from_file"
 
 
-let money_from_file path =
+let money_from_file (path: path) =
 
   let infile = open_in path in
 
@@ -73,52 +74,45 @@ let money_from_file path =
   (final_graph,infolist)
 
 
+let get_name_of_id infos_list id = 
+	let rec loop = function
+		| [] -> failwith "No id for name"
+		| (id1,name,paid)::reste -> if id1 = id then name else loop reste
+	in loop infos_list
 
 
-let money_write_file path graph =
+
+let money_write_file path graph infos_list =
 
   (* Open a write-file. *)
   let ff = open_out path in
-
+  let size = List.length infos_list in
   (* Write in this file. *)
-  fprintf ff "%% This is a graph.\n\n" ;
+  fprintf ff "%% This is the solution for money sharing problem\n\n" ;
 
-  (* Write all nodes (with fake coordinates) *)
-  n_iter_sorted graph (fun id -> fprintf ff "n %.1f 1.0\n" (float_of_int id)) ;
-  fprintf ff "\n" ;
+  (* Write all names, and what they have to pay. *)
+  e_iter graph (fun id1 id2 to_pay -> if (id1 <> size && id2 <> size && id1 <> (size+1) && id2 <> (size+1) && int_of_string to_pay <> 0 )
+									then fprintf ff "%s owes %s$ to %s\n" (get_name_of_id infos_list id1) to_pay (get_name_of_id infos_list id2)  );
 
-  (* Write all arcs *)
-  e_iter graph (fun id1 id2 lbl -> fprintf ff "e %d %d %s\n" id1 id2 lbl) ;
+  
 
-  fprintf ff "\n%% End of graph\n" ;
+  fprintf ff "\n%% End of debts\n" ;
 
   close_out ff ;
   ()
 
 
 
-let money_export gr file = 
-  let ff = open_out file in 
-  fprintf ff "digraph finite_state_machine {
-                  rankdir=LR;
-                  size=\"8,5\"
-                  node [shape = circle];";
-  e_iter gr (fun id1 id2 lbl -> fprintf ff "%d -> %d [label = \"%s\"];\n" id1 id2 lbl) ;
-  fprintf ff "}"
-
-
-
-
-let print_infos_list infos = 
+let print_infos_list (infos_list: infos list) = 
 	let rec loop = function
 		| [] -> Printf.printf "\n%!"
 		| (id,name,paid)::reste -> let () = Printf.printf "Name : %s, id : %d, paid : %d\n%!" name id paid
 											in loop reste
-	in loop infos
+	in loop infos_list
 
 
 
-let compute_sum infos_list = List.fold_left (fun acc (id,name,paid) -> paid+acc) 0 infos_list 
+let compute_sum (infos_list: infos list) = List.fold_left (fun acc (id,name,paid) -> paid+acc) 0 infos_list 
 
 
 let compute_diff (infos_list: infos list) = 
@@ -127,6 +121,14 @@ let compute_diff (infos_list: infos list) =
 			List.fold_left (fun acc (id,name,paid) -> (id, (paid-perPerson) )::acc ) [] infos_list
 
 
-
-(*let money_init_graph infos_list = 
-	let complete_sub_graph = *)
+let money_init_graph (gr: int graph) (diff_list: (id*int) list ) = 
+	let complete_sub_graph = complete_subgraph gr in
+	let size = List.length diff_list in
+	let final_graph = new_node (new_node complete_sub_graph size) (size+1) in 
+		n_fold final_graph (fun acc id -> if (id <> size && id <> (size+1)) then
+											let score = List.assoc id diff_list in 
+												if score < 0 then 
+													new_arc acc size id (abs score)
+												else new_arc acc id (size+1) score
+										else acc) final_graph
+																

@@ -104,7 +104,10 @@ let export gr file =
   let ff = open_out file in 
   fprintf ff "digraph finite_state_machine {
                   rankdir=LR;
-                  size=\"8,5\"
+                  size=\"15\"
                   node [shape = circle];";
-  e_iter gr (fun id1 id2 lbl -> fprintf ff "%d -> %d [label = \"%s\"];\n" id1 id2 lbl) ;
+  e_iter gr (fun id1 id2 lbl -> (*let newlbl = if lbl = string_of_int max_int then "∞" else  lbl in*)
+             fprintf ff "%d -> %d [label = \"%s\"];\n" id1 id2 (*new*)lbl) ;
   fprintf ff "}"
+
+  (* Then part about "∞" is here to make the display of a money_graphs easier in tests*)

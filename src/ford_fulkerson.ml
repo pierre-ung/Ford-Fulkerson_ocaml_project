@@ -8,7 +8,10 @@ let init_graph (gr:int graph) =
 
 let residual_graph (gr:(int*int) graph) =
   let res_graph = gmap gr (fun (x,y) -> y-x)
-in e_fold res_graph (fun acc id1 id2 n -> new_arc acc id2 id1 0) res_graph
+in e_fold res_graph (fun acc id1 id2 n -> match find_arc acc id1 id2 with 
+                                            | None -> new_arc acc id2 id1 0
+                                            | Some x -> acc )
+                                              res_graph
 (* for every edge in the graph, we create its back-edge, of value 0*)
 
 (* we'll be calling that function multiple times, until it returns a blacklist containing the src id*)
@@ -48,7 +51,7 @@ let add_flow_on_path (gr: int graph) (path: id list) (n: int) =
 let merge_initial_and_residual (initial_gr: int graph) (residual_graph: int graph) =
   e_fold initial_gr (fun acc id1 id2 n -> match find_arc residual_graph id1 id2 with 
                                           | None -> failwith "Errors have been done"
-                                          | Some x -> my_add_arc acc id1 id2 (n-x) ) (init_graph initial_gr)
+                                          | Some x -> my_add_arc acc id1 id2 (max (n-x) 0) ) (init_graph initial_gr)
 
 
 

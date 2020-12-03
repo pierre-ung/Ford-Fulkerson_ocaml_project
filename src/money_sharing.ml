@@ -88,13 +88,12 @@ let money_write_file path graph infos_list =
   (* Open a write-file. *)
   let ff = open_out path in
   let size = List.length infos_list in
-  let graph = gmap graph fst in
   (* Write in this file. *)
   fprintf ff "%% This is the solution for money sharing problem\n\n" ;
 
   (* Write all names, and what they have to pay. *)
-  e_iter graph (fun id1 id2 to_pay -> if (id1 <> size && id2 <> size && id1 <> (size+1) && id2 <> (size+1) && to_pay <> 0 )
-									then fprintf ff "%s owes %d$ to %s\n" (get_name_of_id infos_list id1) to_pay (get_name_of_id infos_list id2)  );
+  e_iter graph (fun id1 id2 to_pay -> if (id1 <> size && id2 <> size && id1 <> (size+1) && id2 <> (size+1) && to_pay <> 0. )
+									then fprintf ff "%s owes %.2f$ to %s\n" (get_name_of_id infos_list id1) to_pay (get_name_of_id infos_list id2)  );
 
   
 

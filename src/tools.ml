@@ -37,3 +37,6 @@ let rec print_int_list = function
 
 let complete_subgraph (gr:int graph) = 
 	n_fold gr (fun acc1 id1 -> n_fold gr (fun acc2 id2 -> if id1 <> id2 then new_arc acc2 id1 id2 max_int else acc2) acc1) gr 
+
+
+let cents_to_float n = (float_of_int n) /. (100.)

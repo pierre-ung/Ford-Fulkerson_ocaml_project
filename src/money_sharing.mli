@@ -8,7 +8,7 @@ type infos = id*string*int
 
 val money_from_file: path -> (string graph*(infos list))
 
-val money_write_file: path -> (int*int) graph -> infos list ->unit
+val money_write_file: path -> float graph -> infos list ->unit
 
 val print_infos_list: infos list -> unit
 

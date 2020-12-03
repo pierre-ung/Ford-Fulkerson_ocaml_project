@@ -108,8 +108,7 @@ let export gr file =
                   rankdir=LR;
                   size=\"15\"
                   node [shape = circle];";
-  e_iter gr (fun id1 id2 lbl -> (*let newlbl = if lbl = string_of_int max_int then "∞" else  lbl in*)
-             fprintf ff "%d -> %d [label = \"%s\"];\n" id1 id2 (*new*)lbl) ;
+  e_iter gr (fun id1 id2 lbl -> fprintf ff "%d -> %d [label = \"%s\"];\n" id1 id2 lbl) ;
   fprintf ff "}"
 
 

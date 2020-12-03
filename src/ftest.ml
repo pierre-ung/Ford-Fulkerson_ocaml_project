@@ -40,9 +40,13 @@ let () =
   in
   let () = print_infos_list infos
   in 
+  let infos = List.map (fun (id,name,paid) -> (id,name,(paid*100)) ) infos 
+  in 
   let int_graph = gmap graph int_of_string
-  in
+  in 
   let solved_graph = solve_money_sharing int_graph infos
+  in
+  let final_graph = gmap solved_graph (fun (x,y) -> cents_to_float x)
   in
 
 
@@ -54,10 +58,12 @@ let () =
 
   (* Rewrite the graph that has been read. *)
 
-  let () = money_write_file outfile solved_graph infos in
+  let () = money_write_file outfile final_graph infos in
 
   
-  let() = export_int_int_graph solved_graph (outfile^".dot") in
+  let final_graph = gmap final_graph string_of_float in
+
+  let() = export final_graph (outfile^".dot") in
   
 
 

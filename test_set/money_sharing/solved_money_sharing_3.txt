@@ -1,0 +1,14 @@
+% This is the solution for money sharing problem
+
+Tata owes 17.00$ to Sebastien
+Sebastien owes 17.00$ to Rachel
+Rachel owes 1.00$ to Tata
+Loic owes 1.00$ to Julien
+Loic owes 1.00$ to Rachel
+Pierre owes 6.00$ to Loic
+Pierre owes 17.00$ to Tata
+Julien owes 5.00$ to Pierre
+Julien owes 1.00$ to Rachel
+
+% End of debts
+%Here, everybody paid 40.00$

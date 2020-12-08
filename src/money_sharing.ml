@@ -59,7 +59,7 @@ let money_from_file (path: path) =
         (* The first character of a line determines its content : n or comment. *)
         else match line.[0] with
           | 'n' -> let readed = read_node n graph line infolist 
-      				in (n+1, fst readed, snd readed)
+            in (n+1, fst readed, snd readed)
 
           (* It should be a comment, otherwise we complain. *)
           | _ -> (n, read_comment graph line, infolist)
@@ -76,10 +76,10 @@ let money_from_file (path: path) =
 
 
 let get_name_of_id infos_list id = 
-	let rec loop = function
-		| [] -> failwith "No id for name"
-		| (id1,name,paid)::reste -> if id1 = id then name else loop reste
-	in loop infos_list
+  let rec loop = function
+    | [] -> failwith "No id for name"
+    | (id1,name,paid)::reste -> if id1 = id then name else loop reste
+  in loop infos_list
 
 
 
@@ -93,9 +93,9 @@ let money_write_file path graph infos_list =
 
   (* Write all names, and what they have to pay. *)
   e_iter graph (fun id1 id2 to_pay -> if (id1 <> size && id2 <> size && id1 <> (size+1) && id2 <> (size+1) && to_pay <> 0. )
-									then fprintf ff "%s owes %.2f$ to %s\n" (get_name_of_id infos_list id1) to_pay (get_name_of_id infos_list id2)  );
+                 then fprintf ff "%s owes %.2f$ to %s\n" (get_name_of_id infos_list id1) to_pay (get_name_of_id infos_list id2)  );
 
-  
+
 
   fprintf ff "\n%% End of debts\n" ;
 
@@ -105,11 +105,13 @@ let money_write_file path graph infos_list =
 
 
 let print_infos_list (infos_list: infos list) = 
-	let rec loop = function
-		| [] -> Printf.printf "\n%!"
-		| (id,name,paid)::reste -> let () = Printf.printf "Name : %s, id : %d, paid : %d\n%!" name id paid
-											in loop reste
-	in loop infos_list
+  let rec loop = function
+    | [] -> Printf.printf "\n%!"
+    | (id,name,paid)::reste -> let () = Printf.printf "Name : %s, id : %d, paid : %d\n%!" name id paid
+      in loop reste
+  in
+  loop infos_list;
+  Printf.printf("You can see the result in the outfile you mentionned\n") 
 
 
 
@@ -117,23 +119,23 @@ let compute_sum (infos_list: infos list) = List.fold_left (fun acc (id,name,paid
 
 
 let compute_diff (infos_list: infos list) = 
-	let total = compute_sum infos_list in
-	let perPerson = total / (List.length infos_list) in 
-	List.fold_left (fun acc (id,name,paid) -> (id, (paid-perPerson) )::acc ) [] infos_list
+  let total = compute_sum infos_list in
+  let perPerson = total / (List.length infos_list) in 
+  List.fold_left (fun acc (id,name,paid) -> (id, (paid-perPerson) )::acc ) [] infos_list
 
 
 let money_init_graph (gr: int graph) (diff_list: (id*int) list ) = 
-	let complete_sub_graph = complete_subgraph gr in
-	let size = List.length diff_list in
-	let final_graph = new_node (new_node complete_sub_graph size) (size+1) in 
-		n_fold final_graph (fun acc id -> if (id <> size && id <> (size+1)) then
-											let score = List.assoc id diff_list in 
-												if score < 0 then 
-													new_arc acc size id (abs score)
-												else new_arc acc id (size+1) score
-										else acc) final_graph
+  let complete_sub_graph = complete_subgraph gr in
+  let size = List.length diff_list in
+  let final_graph = new_node (new_node complete_sub_graph size) (size+1) in 
+  n_fold final_graph (fun acc id -> if (id <> size && id <> (size+1)) then
+                         let score = List.assoc id diff_list in 
+                         if score < 0 then 
+                           new_arc acc size id (abs score)
+                         else new_arc acc id (size+1) score
+                       else acc) final_graph
 
 let solve_money_sharing (gr:int graph) (infos_list: infos list) = 
-	let algo_graph = money_init_graph gr (compute_diff infos_list) in
-	let size = List.length infos_list in
-	solve_max_flow algo_graph size (size+1)
+  let algo_graph = money_init_graph gr (compute_diff infos_list) in
+  let size = List.length infos_list in
+  solve_max_flow algo_graph size (size+1)

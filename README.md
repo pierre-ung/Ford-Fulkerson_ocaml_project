@@ -2,6 +2,21 @@
 
 Nous avons atteint le **Medium project** en implémentant la résolution du problème de *money sharing*
 
+- [4IR - INSA Toulouse - OCaml - Mini Project](#4ir---insa-toulouse---ocaml---mini-project)
+  * [Etudiants (Groupe 4IR-C1) :](#etudiants--groupe-4ir-c1---)
+  * [Fonctionnalités](#fonctionnalit-s)
+  * [Utilisation](#utilisation)
+    + [Maximisation de flots (Ford-Fulkerson)](#maximisation-de-flots--ford-fulkerson-)
+      - [Démonstration](#d-monstration)
+      - [Utilisation libre](#utilisation-libre)
+    + [Money sharing](#money-sharing)
+      - [Démonstration](#d-monstration-1)
+      - [Utilisation libre](#utilisation-libre-1)
+  * [Tests](#tests)
+    + [Ford Fulkerson.](#ford-fulkerson)
+    + [Money sharing](#money-sharing-1)
+
+
 ## Etudiants (Groupe 4IR-C1) : 
 * Loic ROBERT
 * Pierre UNG

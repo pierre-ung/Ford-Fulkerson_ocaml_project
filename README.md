@@ -1,6 +1,8 @@
 # 4IR - INSA Toulouse - OCaml - Mini Project 
 
 Nous avons atteint le **Medium project** en implémentant la résolution du problème de *money sharing*
+## Sommaire
+[Etudiants](Etudiants)
 
 ## Etudiants (Groupe 4IR-C1) : 
 * Loic ROBERT

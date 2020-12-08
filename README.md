@@ -8,10 +8,10 @@ Nous avons atteint le **Medium project** en implémentant la résolution du prob
   * [Fonctionnalités](#fonctionnalit-s)
   * [Utilisation](#utilisation)
     + [Maximisation de flots (Ford-Fulkerson)](#maximisation-de-flots--ford-fulkerson-)
-      - [Démonstration](#d-monstration)
+      - [Demonstration](#demonstration)
       - [Utilisation libre](#utilisation-libre)
     + [Money sharing](#money-sharing)
-      - [Démonstration](#d-monstration-1)
+      - [Demonstration](#demonstration-1)
       - [Utilisation libre](#utilisation-libre-1)
   * [Tests](#tests)
     + [Ford Fulkerson.](#ford-fulkerson)
@@ -42,7 +42,7 @@ make build
 
 ### Maximisation de flots (Ford-Fulkerson)
 
-#### Démonstration
+#### Demonstration
 
 Pour lancer la démonstration :
 ```bash
@@ -96,7 +96,7 @@ dot -Tsvg fichier_de_sortie.dot > fichier_de_sortie.svg
 
 ### Money sharing
 
-#### Démonstration
+#### Demonstration
 
 Pour lancer la démonstration :
 ```bash

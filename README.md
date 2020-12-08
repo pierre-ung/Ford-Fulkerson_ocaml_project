@@ -2,6 +2,7 @@
 
 Nous avons atteint le **Medium project** en implémentant la résolution du problème de *money sharing*
 
+## Sommaire
 - [4IR - INSA Toulouse - OCaml - Mini Project](#4ir---insa-toulouse---ocaml---mini-project)
   * [Etudiants (Groupe 4IR-C1) :](#etudiants--groupe-4ir-c1---)
   * [Fonctionnalités](#fonctionnalit-s)

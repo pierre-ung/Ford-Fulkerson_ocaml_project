@@ -1,24 +1,125 @@
-*In this project, we used the A.Bit-Monnot's base project*
+# 4IR - INSA Toulouse - OCaml - Mini Project 
+
+Nous avons atteint le **Medium project** en implémentant la résolution du problème de *money sharing*
+
+## Etudiants (Groupe 4IR-C1) : 
+* Loic ROBERT
+* Pierre UNG
+
+## Fonctionnalités
+* Maximisation de flots de graphes (Algorithme de Ford-Fulkerson) totalement fonctionnel
+  * Entrée: 
+       - Un graphe orienté avec flots maximum de chaque arc au format texte
+       - Un noeud source 
+       - Un noeud puit
+  * Sortie: Le graphe d'entrée avec les flots maximisés, au format texte et .dot (pour pouvoir le     convertir en image .svg)
+* Résolution du problème "money sharing" (qui utilise aussi Ford-Fulkerson)
+  * Entrée: Une liste d'association <Nom> <Somme payé> (où Somme payé est un entier)
+  * Sortie: Un fichier texte montrant combien chacun doit aux autres pour que tout le monde ai payé la même somme
+
+## Utilisation
+
+Build les 2 éxécutables: 
+```bash
+make build
+```
+
+### Maximisation de flots (Ford-Fulkerson)
+
+#### Démonstration
+
+Pour lancer la démonstration :
+```bash
+make demo_ff
+```
 
 
-Base project for Ocaml project on Ford-Fulkerson. This project contains some simple configuration files to facilitate editing Ocaml in VSCode.
+#### Utilisation libre
 
-To use, you should install the *OCaml* extension in VSCode. Other extensions might work as well but make sure there is only one installed.
-Then open VSCode in the root directory of this repository (command line: `code path/to/ocaml-maxflow-project`).
+Format d'un graphe d'entrée (exemple, vous pouvez générer un graphe [ici](https://www-m9.ma.tum.de/graph-algorithms/flow-ford-fulkerson/index_en.html)): 
+```c
+%% Nodes
 
-Features :
- - full compilation as VSCode build task (Ctrl+Shift+b)
- - highlights of compilation errors as you type
- - code completion
- - automatic indentation on file save
+n 88 209     % This is node #0, with its coordinates (which are not used by the algorithms).
+n 408 183
+n 269 491
+n 261 297
+n 401 394
+n 535 294    % This is node #5.
 
 
-A makefile provides some useful commands:
- - `make build` to compile. This creates an ftest.native executable
- - `make demo` to run the `ftest` program with some arguments
- - `make format` to indent the entire project
- - `make edit` to open the project in VSCode
- - `make clean` to remove build artifacts
+%% Edges
 
-In case of trouble with the VSCode extension (e.g. the project does not build, there are strange mistakes), a common workaround is to (1) close vscode, (2) `make clean`, (3) `make build` and (4) reopen vscode (`make edit`).
+e 1 3 11     % An edge from 3 to 1, labeled "11".
+e 3 1 4
+e 3 2 2
+e 1 5 22
+e 4 5 14
+e 4 1 1
+e 0 1 7
+e 0 3 10
+e 3 4 5
+e 2 4 12
+e 0 2 8
+```
 
+Build l'éxécutable ftest.native:
+```bash
+make build_ff
+```
+
+Lancer ftest.native:
+```bash
+./ftest.native graphe_source noeud_source noeud_puit fichier_de_sortie
+```
+
+Pour convertir fichier_de_sortie.dot en image:
+```bash
+dot -Tsvg fichier_de_sortie.dot > fichier_de_sortie.svg
+```
+
+### Money sharing
+
+#### Démonstration
+
+Pour lancer la démonstration :
+```bash
+make demo_ms
+```
+
+#### Utilisation libre
+
+Format d'une liste d'entrée (exemple): 
+```bash
+% Format: n <Nom> <Somme donnée>
+% Ceci est un commentaire 
+n Pierre 40
+n Loic 40
+n Julien 70
+n Moi 40
+```
+
+Build l'éxécutable share_money_test.native:
+```bash
+make build_ms
+```
+
+Lancer share_money_test.native:
+```bash
+./share_money_test.native fichier_entrée fichier_sortie
+```
+Le résultat se trouve dans le fichier_sortie.txt sous la forme:
+```bash
+x1 owes y$ to x2
+...
+```
+
+## Tests
+Les tests que nous avons effectués sont disponibles dans */test_set*
+### Ford Fulkerson.
+* Les graphs d'entrée et de sortie au format texte sont disponibles dans */Ford_Fulkerson*.
+* Les graphes de sortie (avec les flots maximisés) au format .svg sont disponibles dans */Ford_Fulkerson/solved_graph_images*.
+
+### Money sharing
+* Les listes d'entrée et leur solutions au format texte sont disponibles dans */money_sharing*.
+* Les graphes associés aux solutions sont disponibles dans */money_sharing/graphs*.

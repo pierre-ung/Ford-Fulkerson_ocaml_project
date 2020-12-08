@@ -14,7 +14,7 @@ Nous avons atteint le **Medium project** en implémentant la résolution du prob
        - Un noeud puit
   * Sortie: Le graphe d'entrée avec les flots maximisés, au format texte et .dot (pour pouvoir le     convertir en image .svg)
 * Résolution du problème "money sharing" (qui utilise aussi Ford-Fulkerson)
-  * Entrée: Une liste d'association <Nom> <Somme payé> (où Somme payé est un entier)
+  * Entrée: Une liste d'association Nom Somme_payé (où Somme_payé est un entier)
   * Sortie: Un fichier texte montrant combien chacun doit aux autres pour que tout le monde ai payé la même somme
 
 ## Utilisation

@@ -23,6 +23,7 @@ let rec add_arc (gr:'a graph) (id1:int) (id2:int) (n:'a) =
 
 let add_to_first (a,b) c = (a+c,b)
 
+
 let rec my_add_arc (gr: (int*int) graph) (id1: id) (id2: id) (n:int) =
   match find_arc gr id1 id2 with
   | None -> new_arc gr id1 id2 (0,n)
@@ -31,9 +32,11 @@ let rec my_add_arc (gr: (int*int) graph) (id1: id) (id2: id) (n:int) =
          id2=id4 then new_arc acc id1 id2 (add_to_first x n)
       else new_arc acc id3 id4 x) (clone_nodes gr)
 
+
 let rec print_int_list = function
   | [] -> Printf.printf "\n"
   | x::reste -> begin (Printf.printf " %d" x) end; print_int_list reste
+
 
 let complete_subgraph (gr:int graph) = 
   n_fold gr (fun acc1 id1 -> n_fold gr (fun acc2 id2 -> if id1 <> id2 then new_arc acc2 id1 id2 max_int else acc2) acc1) gr 

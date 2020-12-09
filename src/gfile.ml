@@ -126,4 +126,4 @@ let export_int_int_graph gr file =
               fprintf ff "%d -> %d [label = \"%s\"];\n" id1 id2 newlbl) ;
   fprintf ff "}"
 
-(* Then part about "∞" is here to make the display of a money_graphs easier in tests*)
+(* The part about "∞" is here to make the display of a money_graphs easier in tests*)

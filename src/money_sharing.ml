@@ -75,6 +75,7 @@ let money_from_file (path: path) =
   (final_graph,infolist)
 
 
+(* A simple association of List.assoc for 3-uples lists*)
 let get_name_of_id infos_list id = 
   let rec loop = function
     | [] -> failwith "No id for name"
@@ -104,6 +105,7 @@ let money_write_file path graph infos_list =
 
 
 
+(* Simple print procedure the ease debug *)
 let print_infos_list (infos_list: infos list) = 
   let rec loop = function
     | [] -> Printf.printf "\n%!"
@@ -114,16 +116,20 @@ let print_infos_list (infos_list: infos list) =
   Printf.printf("You can see the result in the outfile you mentionned\n") 
 
 
-
+(* Simple sum computation to deduce the amount everyone should have paid *)
 let compute_sum (infos_list: infos list) = List.fold_left (fun acc (id,name,paid) -> paid+acc) 0 infos_list 
 
 
+(* returns a list of form (id, amount), where id is relative to a person and amount is what this person still has to pay *)
 let compute_diff (infos_list: infos list) = 
   let total = compute_sum infos_list in
   let perPerson = total / (List.length infos_list) in 
   List.fold_left (fun acc (id,name,paid) -> (id, (paid-perPerson) )::acc ) [] infos_list
 
 
+(* For this problem, we have to build a complete graph beetween every person
+    Then, we add a source, with arcs from the source to everyone who still has something to pay
+    Also, a sink is added, with arcs from everyone who paid to much to the sink *)
 let money_init_graph (gr: int graph) (diff_list: (id*int) list ) = 
   let complete_sub_graph = complete_subgraph gr in
   let size = List.length diff_list in
@@ -135,6 +141,9 @@ let money_init_graph (gr: int graph) (diff_list: (id*int) list ) =
                          else new_arc acc id (size+1) score
                        else acc) final_graph
 
+
+(* In this function, we first initialize the graph to match with the money sharing problem,
+    and then apply a normal max flow algorithm, as we implemented Ford_fulkerson method *)
 let solve_money_sharing (gr:int graph) (infos_list: infos list) = 
   let algo_graph = money_init_graph gr (compute_diff infos_list) in
   let size = List.length infos_list in

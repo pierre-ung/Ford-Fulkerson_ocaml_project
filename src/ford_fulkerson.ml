@@ -2,10 +2,12 @@ open Graph
 open Tools
 
 
-
+(* initializes the graph for the flow problem*)
 let init_graph (gr:int graph) = 
   gmap gr (fun x -> (0,x))
 
+
+(* returns the residual graph as the ford fulkerson algorithm computes it *)
 let residual_graph (gr:(int*int) graph) =
   let res_graph = gmap gr (fun (x,y) -> y-x)
   in e_fold res_graph (fun acc id1 id2 n -> match find_arc acc id1 id2 with 
@@ -14,10 +16,12 @@ let residual_graph (gr:(int*int) graph) =
     res_graph
 (* for every edge in the graph, we create its back-edge, of value 0*)
 
+
+
+
+
 (* we'll be calling that function multiple times, until it returns a blacklist containing the src id*)
 (* the intern loop variable 'path' is used to return the path, but also as a memo list not to loop in the graph *)
-
-
 
 let find_path (gr: int graph) (src: id) (target: id) (blacklist: id list) = 
   let rec loop (actual: id) (path: id list) (min_weight: int) (potentials: int out_arcs) = 
@@ -27,13 +31,14 @@ let find_path (gr: int graph) (src: id) (target: id) (blacklist: id list) =
       if (not (List.mem next path) && not (List.mem next blacklist) && weight > 0) (* if i can go that way *)
       then 
         if next = target 
-        then (target::path, (min weight min_weight)) (* path as been found *)
+        then (target::path, (min weight min_weight)) (* path to target has been found *)
         else loop next (next::path) (min weight min_weight) (out_arcs gr next) (* on my way to find the path*)
       else loop actual path min_weight tail (* try next out_arc *)
   in loop src [src] max_int (out_arcs gr src)
 
 
 
+(* that function will add n units of flow on each arc across the given path *)
 let add_flow_on_path (gr: int graph) (path: id list) (n: int) = 
   let rec loop temp_gr = function
     | [] -> temp_gr
@@ -45,9 +50,8 @@ let add_flow_on_path (gr: int graph) (path: id list) (n: int) =
 
 
 
-
-
-
+(* once the function has applied the algorithm, we create the final graph with the residual one 
+  (used for looping in the algorithm), and the original one (which has the capacities values) *)
 let merge_initial_and_residual (initial_gr: int graph) (residual_graph: int graph) =
   e_fold initial_gr (fun acc id1 id2 n -> match find_arc residual_graph id1 id2 with 
       | None -> failwith "Errors have been done"

@@ -1,6 +1,10 @@
 open Graph
 
 (*
+
+------- Those functions are internal to the package.
+		We let them here for further tests	---------------
+
 val init_graph: int graph -> (int*int) graph
 
 val residual_graph: (int*int) graph -> int graph

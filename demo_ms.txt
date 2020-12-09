@@ -1,0 +1,8 @@
+% This is the solution for money sharing problem
+
+Pierre owes 7.50$ to Loic
+Pierre owes 7.50$ to Julien
+Loic owes 15.00$ to Julien
+Moi owes 7.50$ to Pierre
+
+% End of debts
